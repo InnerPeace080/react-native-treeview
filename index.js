@@ -1,7 +1,13 @@
-import React,{
-    View, Text, Component, Animated,
+
+import React  from 'react';
+
+import {
+    View, Text, Animated,
     TouchableNativeFeedback
 } from 'react-native'
+
+import {Component}  from 'react';
+
 import Icon from 'react-native-vector-icons/MaterialIcons'
 
 class TreeView extends Component {
@@ -13,7 +19,7 @@ class TreeView extends Component {
         }
     }
 
-    _toggleState(type, i, node) {
+    _toggleState(type, i, node,parent) {
         const {collapsed} = this.state
         const {onItemClicked} = this.props
 
@@ -22,29 +28,29 @@ class TreeView extends Component {
             collapsed: collapsed
         })
         if (onItemClicked)
-            onItemClicked(type, i, node)
+            onItemClicked(type, i, node,parent)
     }
 
     _getStyle(type, tag) {
         return [styles[tag], styles[type + tag]]
     }
 
-    _getNodeView(type, i, node) {
+    _getNodeView(type, i, node,parent) {
         const {collapsed} = this.state
         const iconSize = type == 'root' ? 16 : 14
         const hasChildren = !!node.data
-        const icon = node.icon ? node.icon : (collapsed[type + i] ? 'chevron-right' : 'keyboard-arrow-down')
+        const icon = node.icon ? node.icon : (collapsed[`${parent}${parent!==''?'/':''}${node.text}`] ? 'chevron-right' : 'keyboard-arrow-down')
         return (
             <View style={this._getStyle(type, 'item')}>
                 {
                     !hasChildren && !node.icon  ? null : <Icon style={this._getStyle(type, 'icon')} size={iconSize} name={icon} />
                 }
-                <Text style={this._getStyle(type, 'text')}> {node.text} </Text>
+                <Text style={[this._getStyle(type, 'text'),node.textStyle]}> {node.text} </Text>
             </View>
         )
     }
 
-    _getNode(type, i, node) {
+    _getNode(type, i, node,parent) {
         const {collapsed} = this.state
         const {renderItem} = this.props
         const hasChildren = !!node.data
@@ -52,23 +58,23 @@ class TreeView extends Component {
         return (
             <View key={i} style={this._getStyle(type, 'node')} >
                 <TouchableNativeFeedback
-                    onPress={() => this._toggleState.bind(this)(type, i, node)}
+                    onPress={() => this._toggleState.bind(this)(type, i, node,parent)}
                     background={TouchableNativeFeedback.SelectableBackground()} >
-                    {renderItem ? renderItem(type, i, node) : this._getNodeView(type, i, node)}
+                    {renderItem ? renderItem(type, i, node) : this._getNodeView(type, i, node,`${parent}${parent!==''?'/':''}${node.text}`)}
                 </TouchableNativeFeedback>
                 <View style={styles.children}>
                     {
-                        collapsed[type + i] ? null : this.getTree('children', node.data || [])
+                        collapsed[`${parent}${parent!==''?'/':''}${node.text}`] ? null : this.getTree('children', node.data || [],`${parent}${parent!==''?'/':''}${node.text}`)
                     }
                 </View>
             </View>
         )
     }
 
-    getTree(type, data) {
+    getTree(type, data,parent) {
         const nodes = [];
         for (const i = 0; i < data.length; i++) {
-            nodes.push(this._getNode(type, i, data[i]))
+            nodes.push(this._getNode(type, i, data[i],parent))
         }
         return nodes
     }
@@ -76,8 +82,8 @@ class TreeView extends Component {
     render() {
         const {data} = this.props
         return (
-            <View style={styles.tree}>
-                {this.getTree('root', data)}
+            <View style={[styles.tree,this.props.style]}>
+                {this.getTree('root', data,'')}
             </View>
         )
     }
