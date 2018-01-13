@@ -3,7 +3,8 @@ import React  from 'react';
 
 import {
     View, Text, Animated,
-    TouchableNativeFeedback
+    TouchableNativeFeedback,
+    TouchableOpacity
 } from 'react-native'
 
 import {Component}  from 'react';
@@ -57,11 +58,10 @@ class TreeView extends Component {
 
         return (
             <View key={i} style={this._getStyle(type, 'node')} >
-                <TouchableNativeFeedback
-                    onPress={() => this._toggleState.bind(this)(type, i, node,parent)}
-                    background={TouchableNativeFeedback.SelectableBackground()} >
+                <TouchableOpacity
+                    onPress={() => this._toggleState.bind(this)(type, i, node,parent)}>
                     {renderItem ? renderItem(type, i, node) : this._getNodeView(type, i, node,`${parent}${parent!==''?'/':''}${node.text}`)}
-                </TouchableNativeFeedback>
+                </TouchableOpacity>
                 <View style={styles.children}>
                     {
                         collapsed[`${parent}${parent!==''?'/':''}${node.text}`] ? null : this.getTree('children', node.data || [],`${parent}${parent!==''?'/':''}${node.text}`)
