@@ -3,8 +3,7 @@ import React  from 'react';
 
 import {
     View, Text, Animated,
-    TouchableNativeFeedback,
-    TouchableOpacity
+    TouchableNativeFeedback
 } from 'react-native'
 
 import {Component}  from 'react';
@@ -24,7 +23,7 @@ class TreeView extends Component {
         const {collapsed} = this.state
         const {onItemClicked} = this.props
 
-        collapsed[type + i] = !collapsed[type + i]
+        collapsed[`${parent}${parent!==''?'/':''}${node.text}`] = !collapsed[`${parent}${parent!==''?'/':''}${node.text}`]
         this.setState({
             collapsed: collapsed
         })
@@ -55,13 +54,13 @@ class TreeView extends Component {
         const {collapsed} = this.state
         const {renderItem} = this.props
         const hasChildren = !!node.data
-
         return (
             <View key={i} style={this._getStyle(type, 'node')} >
-                <TouchableOpacity
-                    onPress={() => this._toggleState.bind(this)(type, i, node,parent)}>
+                <TouchableNativeFeedback
+                    onPress={() => this._toggleState.bind(this)(type, i, node,parent)}
+                    background={TouchableNativeFeedback.SelectableBackground()} >
                     {renderItem ? renderItem(type, i, node) : this._getNodeView(type, i, node,`${parent}${parent!==''?'/':''}${node.text}`)}
-                </TouchableOpacity>
+                </TouchableNativeFeedback>
                 <View style={styles.children}>
                     {
                         collapsed[`${parent}${parent!==''?'/':''}${node.text}`] ? null : this.getTree('children', node.data || [],`${parent}${parent!==''?'/':''}${node.text}`)
