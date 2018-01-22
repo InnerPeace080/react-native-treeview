@@ -72,7 +72,7 @@ class TreeView extends Component {
                 <TouchableNativeFeedback
                     onPress={() => this._toggleState.bind(this)(type, i, node,parent)}
                     background={TouchableNativeFeedback.SelectableBackground()} >
-                    {renderItem ? renderItem(type, i, node) : this._getNodeView(type, i, node,`${parent}${parent!==''?'/':''}${node.text}`)}
+                    {renderItem ? renderItem(type, i, node) : this._getNodeView(type, i, node,parent)}
                 </TouchableNativeFeedback>
                 <View style={styles.children}>
                     {
