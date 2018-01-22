@@ -17,6 +17,7 @@ class TreeView extends Component {
         this.state = {
             collapsed: {}
         }
+        this.setCollapsed = this.setCollapsed.bind(this)
     }
 
     _toggleState(type, i, node,parent) {
@@ -29,6 +30,15 @@ class TreeView extends Component {
         })
         if (onItemClicked)
             onItemClicked(type, i, node,parent)
+    }
+
+    setCollapsed(node,parent){
+      const {collapsed} = this.state
+
+      collapsed[`${parent}${parent!==''?'/':''}${node.text}`] = !collapsed[`${parent}${parent!==''?'/':''}${node.text}`]
+      this.setState({
+          collapsed: collapsed
+      })
     }
 
     _getStyle(type, tag) {
@@ -54,6 +64,9 @@ class TreeView extends Component {
         const {collapsed} = this.state
         const {renderItem} = this.props
         const hasChildren = !!node.data
+        if (collapsed[`${parent}${parent!==''?'/':''}${node.text}`] === undefined) {
+          collapsed[`${parent}${parent!==''?'/':''}${node.text}`] = node.initCollapse
+        }
         return (
             <View key={i} style={this._getStyle(type, 'node')} >
                 <TouchableNativeFeedback
