@@ -53,7 +53,7 @@ class TreeView extends Component {
         return (
             <View style={this._getStyle(type, 'item')}>
                 {
-                    !hasChildren && !node.icon  ? null : <Icon style={this._getStyle(type, 'icon')} size={iconSize} name={icon} />
+                    !hasChildren && !node.icon  ? null : <Icon style={[this._getStyle(type, 'icon'),node.iconStyle]} size={iconSize} name={icon} />
                 }
                 <Text style={[this._getStyle(type, 'text'),node.textStyle]}> {node.text} </Text>
             </View>
@@ -69,7 +69,7 @@ class TreeView extends Component {
         }
 
 
-        // background={TouchableNativeFeedback.SelectableBackground()} 
+        // background={TouchableNativeFeedback.SelectableBackground()}
 
         return (
             <View key={i} style={this._getStyle(type, 'node')} >
