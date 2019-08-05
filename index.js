@@ -88,7 +88,7 @@ class TreeView extends Component {
 
     getTree(type, data,parent) {
         const nodes = [];
-        for (const i = 0; i < data.length; i++) {
+        for (let i = 0; i < data.length; i++) {
             nodes.push(this._getNode(type, i, data[i],parent))
         }
         return nodes
